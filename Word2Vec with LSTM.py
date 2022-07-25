@@ -1,5 +1,3 @@
-# Word Embedding + LSTM
-
 import tensorflow as tf
 from tensorflow.keras.datasets import imdb
 from tensorflow.keras.preprocessing import sequence
@@ -15,7 +13,6 @@ state_dim = 32
 (X_train, y_train), (X_test, y_test) = imdb.load_data(num_words = vocabulary_size)
 print('Loaded dataset with {} training samples, {} test samples'.format(len(X_train), len(X_test)))
 
-
 word2id = imdb.get_word_index()
 id2word = {i: word for word, i in word2id.items()}
 print('---review with words---')
@@ -28,7 +25,6 @@ print('Minimum review length: {}'.format(len(min((X_test + X_test), key=len))))
 
 X_train = sequence.pad_sequences(X_train, maxlen=max_words)
 X_test = sequence.pad_sequences(X_test, maxlen=max_words)
-
 
 model=tf.keras.models.Sequential()
 
@@ -47,10 +43,7 @@ print(model.summary())
 
 X_test, y_test = X_test[:2000], y_test[:2000]
 
-#model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
 model.compile(loss='binary_crossentropy', optimizer=optimizers.RMSprop(lr=0.0001), metrics=['accuracy'])
-
 
 history = model.fit(X_train,y_train,epochs=epoches,batch_size=64,validation_data=(X_test,y_test))
 
@@ -67,10 +60,8 @@ plt.plot(epochs, acc, 'bo', label='Training accuracy')
 plt.plot(epochs, val_acc, 'b', label='Validation accuracy')
 plt.title('Training and validation accuracy')
 plt.figure()
-
 plt.plot(epochs, loss, 'bo', label='Training Loss')
 plt.plot(epochs, val_loss, 'b', label='Validation Loss')
 plt.title('Training and validation loss')
 plt.legend()
-
 plt.show()
