@@ -15,27 +15,17 @@ print('Loaded dataset with {} training samples, {} test samples'.format(len(X_tr
 
 word2id = imdb.get_word_index()
 id2word = {i: word for word, i in word2id.items()}
-print('---review with words---')
-print([id2word.get(i, ' ') for i in X_train[6]])
-print('---label---')
-print(y_train[6])
-
-print('Maximum review length: {}'.format(len(max((X_train + X_test), key=len))))
-print('Minimum review length: {}'.format(len(min((X_test + X_test), key=len))))
-
 X_train = sequence.pad_sequences(X_train, maxlen=max_words)
 X_test = sequence.pad_sequences(X_test, maxlen=max_words)
 
 model=tf.keras.models.Sequential()
 
 model.add(Embedding(vocabulary_size,embedding_size,input_length=max_words))
-# totally 5000 words and every word vector has 32 components; and 1 review has 500 words
+# a total collection of 5000 words and every word vector has 32 components
+# alligned to 500 words per review
 # 5000 x 32 = 160,000 parameters
 
-#model.add(Flatten())
-# input 500 words, and every word vector has 32 components;
-# 500 x 32 = 16,000 input values
-
+model.add(Flatten())
 model.add(LSTM(state_dim,return_sequences=False))
 model.add(Dense(1,activation='sigmoid')) # Logistic Regression, 16000 w + 1 b, totally 16001 parameters
 
@@ -46,7 +36,6 @@ X_test, y_test = X_test[:2000], y_test[:2000]
 model.compile(loss='binary_crossentropy', optimizer=optimizers.RMSprop(lr=0.0001), metrics=['accuracy'])
 
 history = model.fit(X_train,y_train,epochs=epoches,batch_size=64,validation_data=(X_test,y_test))
-
 
 import matplotlib.pyplot as plt
 acc = history.history['accuracy']
